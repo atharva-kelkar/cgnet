@@ -52,12 +52,19 @@ class GeometryFeature(nn.Module):
 
     def __init__(self, feature_tuples=None, n_beads=None,
                  device=torch.device('cpu')):
+        print('hello there - from GeometryFeature xoxoxo')
+        import time
+        time.sleep(0)   
         super(GeometryFeature, self).__init__()
 
+        print('hello there - from GeometryFeature')
+            
         self._n_beads = n_beads
         self.device = device
         self.geometry = Geometry(method='torch', device=self.device)
         if feature_tuples != 'all_backbone':
+            print('hello there - from GeometryFeature')
+            
             if feature_tuples is not None:
                 _temp_dict = dict(
                     zip(feature_tuples, np.arange(len(feature_tuples))))

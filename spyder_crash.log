@@ -1,0 +1,14 @@
+Traceback (most recent call last):
+  File "C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\app\mainwindow.py", line 3718, in main
+    mainwindow = run_spyder(app, options, args)
+  File "C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\app\mainwindow.py", line 3559, in run_spyder
+    main.setup()
+  File "C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\app\mainwindow.py", line 908, in setup
+    from spyder.plugins.console.plugin import Console
+  File "C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\plugins\console\plugin.py", line 40, in <module>
+    from spyder.api.plugins import SpyderPluginWidget
+  File "C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\api\plugins\__init__.py", line 25, in <module>
+    from .old_api import SpyderPlugin, SpyderPluginWidget  # noqa
+  File "C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\api\plugins\old_api.py", line 22, in <module>
+    from spyder.utils.icon_manager import ima
+ImportError: cannot import name 'ima' from 'spyder.utils.icon_manager' (C:\ProgramData\Anaconda3\envs\torch_env\lib\site-packages\spyder\utils\icon_manager.py)
