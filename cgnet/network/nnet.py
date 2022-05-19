@@ -34,6 +34,35 @@ class ForceLoss(torch.nn.Module):
         """
         loss = ((force - labels)**2).mean()
         return loss
+    
+class ForceLoss(torch.nn.Module):
+    """Loss function for force matching scheme."""
+
+    def __init__(self):
+        super(ForceLoss, self).__init__()
+
+    def forward(self, force, labels, weights):
+        """Returns force matching loss averaged over all examples.
+
+        Parameters
+        ----------
+        force : torch.Tensor (grad enabled)
+            forces calculated from the CGnet energy via autograd.
+            Size [n_frames, n_degrees_freedom].
+        labels : torch.Tensor
+            forces to compute the loss against. Size [n_frames,
+                                                      n_degrees_of_freedom].
+        weights: torch.Tensor
+            Reweighting weights to be used for reweighting the force-matching loss
+
+        Returns
+        -------
+        loss : torch.Variable
+            example-averaged Frobenius loss from force matching. Size [1, 1].
+
+        """
+        loss = (weights * (force - labels)**2).mean()
+        return loss
 
 
 class CGnet(nn.Module):

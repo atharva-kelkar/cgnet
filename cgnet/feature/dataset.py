@@ -136,7 +136,7 @@ class MoleculeDataset(Dataset):
                              requires_grad=True, device=self.device),
                 torch.tensor(self.forces[index],
                              device=self.device),
-                torch.tensor([])
+                torch.tensor([], device=self.device)
             )
         else:
             return (
