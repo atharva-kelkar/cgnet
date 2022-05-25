@@ -8,7 +8,9 @@ import numpy as np
 import warnings
 
 from cgnet.feature import (GeometryFeature, SchnetFeature, FeatureCombiner,
-                           MultiMoleculeDataset)
+                           MultiMoleculeDataset, MBARMoleculeDataset)
+
+from cgnet.network import MBARForceLoss
 
 
 def _schnet_feature_linear_extractor(schnet_feature, return_weight_data_only=False):
@@ -305,7 +307,10 @@ def dataset_loss(model, loader, optimizer=None,
         if optimizer is not None:
             optimizer.zero_grad()
 
-        coords, force, embedding_property = batch_data
+        if isinstance(loader.dataset, MBARMoleculeDataset):
+            coords, force, embedding_property, weights = batch_data
+        else:
+            coords, force, embedding_property = batch_data
         if batch_num == 0:
             reference_batch_size = coords.numel()
 
@@ -322,7 +327,11 @@ def dataset_loss(model, loader, optimizer=None,
         else:
             potential, predicted_force = model.forward(coords)
 
-        batch_loss = model.criterion(predicted_force, force)
+        if (isinstance(model.criterion, MBARForceLoss) and isinstance(loader.dataset, MBARMoleculeDataset)):
+            batch_loss = model.criterion(predicted_force, force, weights)
+        else:
+            batch_loss = model.criterion(predicted_force, force)
+
 
         if optimizer is not None:
             batch_loss.backward()

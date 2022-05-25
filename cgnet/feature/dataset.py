@@ -205,6 +205,67 @@ class MoleculeDataset(Dataset):
                 raise ValueError("Embeddings must have the same number of beads "
                                  "as the coordinates/forces")
 
+class MBARMoleculeDataset(MoleculeDataset):
+    """Creates dataset for coordinates and forces.
+
+    Parameters
+    ----------
+    coordinates : np.array
+        Coordinate data of dimension [n_frames, n_beads, n_dimensions]
+    forces : np.array
+        Coordinate data of dimension [n_frames, n_beads, n_dimensions]
+    weights : np.array
+        MBAR weights for calculating the average in the equilibrium ensemble, dimension [n_frames, ]
+    embeddings : np.array
+        Embedding data of dimension [n_frames, n_beads, n_embedding_properties]
+        Embeddings must be positive integers.
+    selection : np.array (default=None)
+        Array of frame indices to select from the coordinates and forces.
+        If None, all are used.
+    stride : int (default=1)
+        Subsample the data by 1 / stride.
+    device : torch.device (default=torch.device('cpu'))
+        CUDA device/GPU on which to mount tensors drawn from __getitem__().
+        Default device is the local CPU.
+    """
+    
+    def __init__(self, coordinates, forces, weights, embeddings=None, selection=None,
+                 stride=1, device=torch.device('cpu')):
+        
+        super(MBARMoleculeDataset, self).__init__(self, coordinates, forces, embeddings=None, selection=None,
+                     stride=1, device=torch.device('cpu'))
+        
+        self.weights = weights
+        
+    def __getitem__(self, index):
+        """This will always return 3 items: coordinates, forces, embeddings.
+        If embeddings are not given, then the third object returned will
+        be an empty tensor.
+        """
+        if self.embeddings is None:
+            # Still returns three objects, but the third is an empty tensor
+            return (
+                torch.tensor(self.coordinates[index],
+                             requires_grad=True, device=self.device),
+                torch.tensor(self.forces[index],
+                             device=self.device),
+                torch.tensor([], 
+                             device=self.device),
+                torch.tensor(self.weights[index], 
+                             device=self.device)
+            )
+        else:
+            return (
+                torch.tensor(self.coordinates[index],
+                             requires_grad=True, device=self.device),
+                torch.tensor(self.forces[index],
+                             device=self.device),
+                torch.tensor(self.embeddings[index],
+                             device=self.device),
+                torch.tensor(self.weights[index], 
+                             device=self.device)
+            )
+        
 
 class MultiMoleculeDataset(Dataset):
     """Dataset object for organizing data from molecules of differing sizes.
