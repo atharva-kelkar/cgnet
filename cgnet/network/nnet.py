@@ -61,6 +61,8 @@ class MBARForceLoss(torch.nn.Module):
             example-averaged Frobenius loss from force matching. Size [1, 1].
 
         """
+        print('~~~ Shape of weights array is {} ~~~'.format(weights.shape))
+        print('~~~ Shape of force array is {} ~~~'.format(force.shape))
         loss = (weights * (force - labels)**2).mean()
         return loss
 
